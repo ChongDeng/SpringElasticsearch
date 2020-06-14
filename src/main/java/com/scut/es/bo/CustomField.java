@@ -1,0 +1,29 @@
+package com.scut.es.bo;
+
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
+
+@Data
+public class CustomField implements Serializable {
+
+    private Long fieldId;
+
+    private String fieldName;
+
+    private Integer fieldType; //类型: 1List 2TextField 3TextBox 4CheckBox
+
+    private List<String> fieldValues;
+
+
+
+    private List<Long> value1;
+
+    private String value2;
+
+    private String value3;
+
+    private List<Long> value4;
+
+}

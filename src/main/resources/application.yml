@@ -1,0 +1,16 @@
+#spring:
+#  data:
+#    elasticsearch:
+#      cluster-name: elasticsearch
+#      cluster-nodes: 114.67.80.39:9300
+
+
+
+#elasticsearch
+spring:
+  elasticsearch:
+    rest:
+      uris: 114.67.80.39:9200
+      username: elastic
+      password: 666666
+

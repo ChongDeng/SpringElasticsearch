@@ -1,0 +1,239 @@
+
+Elasticsearch 与mysql数据同步
+
+
+
+
+1 批量新增
+List<Item> list = new ArrayList<>();
+        list.add(new Item(2L, "坚果手机R1", " 手机", "锤子", 3699.00, "http://image.leyou.com/123.jpg"));
+        list.add(new Item(3L, "华为META10", " 手机", "华为", 4499.00, "http://image.leyou.com/3.jpg"));
+        // 接收对象集合，实现批量新增
+        itemRepository.saveAll(list);
+
+通过repository修改文档：
+  修改和新增是同一个接口，区分的依据就是id，这一点跟我们在页面发起PUT请求是类似的。
+
+2 根据id来查询
+Optional<Item> optional = itemRepository.findById(2L);
+
+3 查询全部，并按照价格来排序
+itemRepository.findAll(Sort.by(Sort.Direction.DESC, "price"));
+
+
+4
+    // 构建查询条件
+    NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+    // 添加基本的分词查询
+    queryBuilder.withQuery(QueryBuilders.matchQuery("title", "小米"));
+    // 执行搜索，获取结果
+    Page<Item> items = this.itemRepository.search(queryBuilder.build());
+    // 打印总条数
+    System.out.println(items.getTotalElements());
+    // 打印总页数
+    System.out.println(items.getTotalPages());
+
+5 分页查询
+     // 构建查询条件
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        // 添加基本的分词查询
+        queryBuilder.withQuery(QueryBuilders.termQuery("category", "手机"));
+
+        // 初始化分页参数
+        int page = 0;
+        int size = 3;
+        // 设置分页参数
+        queryBuilder.withPageable(PageRequest.of(page, size));
+
+        // 执行搜索，获取结果
+        Page<Item> items = this.itemRepository.search(queryBuilder.build());
+        // 打印总条数
+        System.out.println(items.getTotalElements());
+        // 打印总页数
+        System.out.println(items.getTotalPages());
+        // 每页大小
+        System.out.println(items.getSize());
+        // 当前页
+        System.out.println(items.getNumber());
+        items.forEach(System.out::println);
+
+6  排序
+
+    // 构建查询条件
+    NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+    // 添加基本的分词查询
+    queryBuilder.withQuery(QueryBuilders.termQuery("category", "手机"));
+
+    // 排序
+    queryBuilder.withSort(SortBuilders.fieldSort("price").order(SortOrder.DESC));
+
+    // 执行搜索，获取结果
+    Page<Item> items = this.itemRepository.search(queryBuilder.build());
+    // 打印总条数
+    System.out.println(items.getTotalElements());
+    items.forEach(System.out::println);
+
+
+
+
+5 好使的wildcard
+
+GET /issue_eso/_search
+{
+  "query": {
+    "bool": {
+
+      "must": [
+        { "wildcard": { "title.keyword": "*se*"}},
+         { "wildcard": { "description.keyword": "*试sea*"}}
+      ]
+    }
+  }
+}
+
+
+
+elasticsearchTemplate的使用：
+
+1 查询所有
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(matchAllQuery()).build();
+
+        return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+2 匹配对应字段
+
+        earchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(matchQuery("name","gaolujie")).build();
+
+        return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+
+3 分页
+         SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                        .withQuery(matchQuery("name","gaolujie"))
+                        .withPageable(new PageRequest(1,1)).build();   //分页
+
+          return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+4 排序
+                SortBuilder sortBuilder = SortBuilders.fieldSort("price")   //排序字段
+                        .order(SortOrder.DESC);   //排序方式
+
+                SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                        .withQuery(matchQuery("name", "gaolujie"))
+                        .withSort(sortBuilder)
+                        .build();
+
+                return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+5 指定查询的字段
+
+    {
+        "_source": ["name","price"]   //结果只显示name和price
+    }
+
+            String[] include = {"name", "price"};
+
+            FetchSourceFilter fetchSourceFilter = new FetchSourceFilter(include, null);   //两个参数分别是要显示的和不显示的
+
+            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withSourceFilter(fetchSourceFilter)
+                    .build();
+
+            return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+6 query filter
+
+    6.1 must
+
+        {
+          "query": {
+            "bool": {
+              "must": {
+                "match":{
+                  "price":31    //只支持单字段
+                }
+              }
+            }
+          }
+        }
+
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                        .withFilter(
+                            boolQuery()
+                                .must(matchQuery("price",80))  //结构类似.bool -> must ->match
+                            )
+                        .build();
+
+                return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+     6.2 must + filter
+
+     {
+       "query": {
+         "bool": {
+           "must": {
+             "match":{
+               "name":"yagao"
+             }
+           },
+           "filter" : {
+               "range" : {
+                     "price" : { "gt" : 6 }     //价格大于6的
+                }
+           }
+         }
+       }
+
+     }
+
+
+      SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                     .withFilter(
+                             boolQuery()
+                                 .must(
+                                         matchQuery("name", "heiren")
+                                 )
+                                 .filter(
+                                         rangeQuery("price")
+                                                 .gt(6)
+                                 )
+                     )
+                     .build();
+
+       return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+7  phrase
+
+    SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(
+                            matchPhraseQuery("name","heiren")
+                    )
+                    .build();
+
+            return elasticsearchTemplate.queryForList(searchQuery, Product.class);
+
+
+8 highlight:
+
+        {
+            "query" : {
+                "match" : {
+                    "producer" : "producer"
+                }
+            },
+            "highlight": {     //高亮显示
+                "fields" : {    //字段
+                    "producer" : {}
+                }
+            }
+        }
+
+
+       SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                       .withQuery(
+                               matchPhraseQuery("name", "heiren")
+                       )
+                       .withHighlightFields(new HighlightBuilder.Field("name"))
+                       .build();
