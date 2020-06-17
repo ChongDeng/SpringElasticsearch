@@ -7,10 +7,18 @@
 
 
 #elasticsearch
+#spring:
+#  elasticsearch:
+#    rest:
+#      uris: 114.67.80.39:9200
+#      username: elastic
+#      password: 666666
+
 spring:
   elasticsearch:
     rest:
-      uris: 114.67.80.39:9200
+      uris:
+        - http://192.168.1.71:9200
+        - http://192.168.1.76:9200
       username: elastic
-      password: 666666
-
+      password: 223344
