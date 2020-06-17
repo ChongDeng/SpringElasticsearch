@@ -199,6 +199,32 @@ public class IssueESOService {
         return issues.getContent();
     }
 
+    //case 2.6 queryNull
+    public List<IssueESO> queryNull(String keyword, boolean isNull, int pageNumber, int pageSize)
+    {
+
+        BoolQueryBuilder re = QueryBuilders.boolQuery();
+
+        BoolQueryBuilder subQuery = QueryBuilders.boolQuery();
+        if(isNull == true){
+            subQuery.mustNot(QueryBuilders.existsQuery("assignedToId"));
+        }
+        else{
+            subQuery.must(QueryBuilders.existsQuery("assignedToId"));
+        }
+        re.must(subQuery);
+
+        List<String> matchFields = setMatchFields();
+
+        SortBuilder sortBuilder = SortBuilders.fieldSort("modified").order(SortOrder.DESC);
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        Page<IssueESO> issues = superSearch(IssueESO.class, keyword, matchFields, Arrays.asList(re), sortBuilder, pageRequest);
+
+        return issues.getContent();
+    }
+
 
     //case 3: delete by specfic field
     public String deleteByTitle(String keyword)

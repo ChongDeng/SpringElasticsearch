@@ -82,6 +82,12 @@ public class SearchController {
         return issueESOService.advancedSearch2(pageSizeRequest, keyword);
     }
 
+    //case 2.6 queryNull
+    @GetMapping("/queryNull")
+    public List<IssueESO> queryNull(@RequestParam String keyword, @RequestParam boolean isNull, @RequestParam int pageNumber, @RequestParam int pageSize) {
+        return issueESOService.queryNull(keyword, isNull, pageNumber, pageSize);
+    }
+
     //case 3: delete by specific field
     @GetMapping("/deleteByTitle")
     public String deleteByTitle() {
