@@ -220,7 +220,7 @@ public class IssueESOService {
         List<IssueESO> res = new ArrayList<>();
         issueESORepository.findAll().forEach(res::add);
 
-        for(IssueESO issueESO : issueESORepository.findAll())
+        for(IssueESO issueESO : res)
         {
             List<Long> values = issueESO.getSystemBoardIdList();
             if(values == null || values.size() == 0)
