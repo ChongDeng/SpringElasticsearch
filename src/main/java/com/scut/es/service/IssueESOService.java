@@ -226,7 +226,7 @@ public class IssueESOService {
     }
 
 
-    //case 3: delete by specfic field
+    //case 3: delete by specific field
     public String deleteByTitle(String keyword)
     {
         issueESORepository.deleteByTitle(keyword);

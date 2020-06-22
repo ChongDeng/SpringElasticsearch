@@ -7,6 +7,7 @@ import com.scut.es.service.SearchHistoryESOService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -57,4 +58,26 @@ public class SearchHistoryController {
 
         return "success";
     }
+
+    @GetMapping("/dataCleanseV2")
+    public String dataCleanseV2() {
+
+        List<SearchHistoryESO> res = new ArrayList<>();
+        searchHistoryESORepository.findAll().forEach(res::add);
+
+        for(SearchHistoryESO searchHistoryESO : res)
+        {
+            String name = searchHistoryESO.getName();
+            searchHistoryESO.setSearchHistoryName(name);
+            searchHistoryESORepository.save(searchHistoryESO);
+        }
+
+        return "success";
+    }
+
+    @GetMapping("/getSearchHistoryByName")
+    List<SearchHistoryESO> getSearchHistoryByName(@RequestParam(required = true) String searchName) {
+        return searchHistoryESOService.getSearchHistoryByName(searchName);
+    }
+
 }
