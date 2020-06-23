@@ -237,3 +237,18 @@ elasticsearchTemplate的使用：
                        )
                        .withHighlightFields(new HighlightBuilder.Field("name"))
                        .build();
+
+
+解決“Fielddata is disabled on text fields by default. Set fielddata=true on”的bug:
+
+    PUT search_history/_mapping
+    {
+      "properties": {
+        "searchHistoryName": {
+          "type":     "text",
+          "fielddata": true
+        }
+      }
+    }
+
+    參考資料： https://www.elastic.co/guide/en/elasticsearch/reference/current/fielddata.html

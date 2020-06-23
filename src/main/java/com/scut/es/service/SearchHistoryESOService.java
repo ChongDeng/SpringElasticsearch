@@ -58,7 +58,7 @@ public class SearchHistoryESOService {
 
             List<String> matchFields = Arrays.asList("searchHistoryName");
 
-            SortBuilder sortBuilder = SortBuilders.fieldSort("modified").order(SortOrder.DESC);
+            SortBuilder sortBuilder = SortBuilders.fieldSort("searchHistoryName.keyword").order(SortOrder.DESC);
 
             PageRequest pageRequest = null;
 

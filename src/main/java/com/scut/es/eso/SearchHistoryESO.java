@@ -35,7 +35,7 @@ public class SearchHistoryESO {
     private String name;
 
     //给本次搜索取的名字 V2
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     private String searchHistoryName;
 
     //搜索的关键词
