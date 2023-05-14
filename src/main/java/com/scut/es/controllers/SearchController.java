@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scut.es.bo.AddIssueESBO;
 import com.scut.es.bo.PageSizeRequest;
+import com.scut.es.dto.Pagination;
 import com.scut.es.eso.IssueESO;
 import com.scut.es.eso.SearchHistoryESO;
 import com.scut.es.repository.IssueESORepository;
@@ -73,11 +74,12 @@ public class SearchController {
 
     //case 2.5: advanced search2
     @GetMapping("/advancedSearch2")
-    public List<IssueESO> advancedSearch2(@RequestParam(required = false)  String keyword)
+    public Pagination<IssueESO> advancedSearch2(@RequestParam(required = false)  String keyword,
+                                                @RequestParam int pageNumber, @RequestParam int pageSize)
     {
         PageSizeRequest pageSizeRequest = new PageSizeRequest();
-        pageSizeRequest.setPageNum(0);
-        pageSizeRequest.setPageSize(10);
+        pageSizeRequest.setPageNum(pageNumber);
+        pageSizeRequest.setPageSize(pageSize);
 
         return issueESOService.advancedSearch2(pageSizeRequest, keyword);
     }

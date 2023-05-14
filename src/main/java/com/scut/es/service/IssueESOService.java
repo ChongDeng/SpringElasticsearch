@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scut.es.bo.AddIssueESBO;
 import com.scut.es.bo.PageSizeRequest;
+import com.scut.es.dto.Pagination;
 import com.scut.es.eso.IssueESO;
 import com.scut.es.repository.IssueESORepository;
 import com.scut.es.repository.SearchHistoryESORepository;
@@ -163,7 +164,7 @@ public class IssueESOService {
     }
 
     //case 2.5: advancedSearch2
-    public List<IssueESO> advancedSearch2(PageSizeRequest pageSizeRequest, String keyword) {
+    public Pagination<IssueESO> advancedSearch2(PageSizeRequest pageSizeRequest, String keyword) {
 
         // case 1： match query
 //        MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery("title", keyword);
@@ -191,11 +192,24 @@ public class IssueESOService {
 
         SortBuilder sortBuilder = SortBuilders.fieldSort("modified").order(SortOrder.DESC);
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        // 1st page index is 0 in es
+        PageRequest pageRequest = PageRequest.of(pageSizeRequest.getPageNum() - 1,
+                                                  pageSizeRequest.getPageSize());
 
         Page<IssueESO> issues = superSearch(IssueESO.class, keyword, matchFields, Arrays.asList(re), sortBuilder, pageRequest);
 
-        return issues.getContent();
+        System.out.println("===== page index: " + pageSizeRequest.getPageNum());
+        System.out.println("====== page size: " + pageSizeRequest.getPageSize());
+        System.out.println("====== data: " + issues.getContent());
+
+        Pagination<IssueESO> ret = Pagination.<IssueESO>builder()
+                .pages(issues.getTotalPages())
+//                .total(issues.getTotalElements())
+                .total(issues.getContent().size())
+                .list(issues.getContent())
+                .pageNum(pageSizeRequest.getPageNum()).pageSize(pageSizeRequest.getPageSize())
+                .build();
+        return ret;
     }
 
     //case 2.6 queryNull
@@ -481,5 +495,39 @@ public class IssueESOService {
 
         return elasticsearchTemplate.queryForPage(nativeSearchQueryBuilder.build(), clazz, index);
 
+    }
+
+    private <T> Pagination<T> getPageResults(List<T> input, int pageNum, int pageSize)
+    {
+        Pagination<T> res = new Pagination<>();
+
+        try{
+            List<T> dataList = new ArrayList<>();
+            long pagesCount = 0;
+
+            if(pageSize > 0 && pageNum > 0)
+            {
+                pagesCount = (input.size() % pageSize) != 0 ? input.size() / pageSize + 1 : input.size() / pageSize;
+
+                if((pageNum - 1) * pageSize < input.size())
+                    dataList = input.subList((pageNum - 1) * pageSize, Math.min(pageNum * pageSize, input.size()));
+            }
+
+            //have to add it per front-end request
+            if(dataList.isEmpty())
+                pageNum = 1;
+
+            res = Pagination.<T>builder()
+                    .pages(pagesCount)
+                    .total(input.size())
+                    .list(dataList)
+                    .pageNum(pageNum).pageSize(pageSize).build();
+
+        }
+        catch (Exception ex){
+            System.out.println("=== getPageResults exception: " + ex.getMessage());
+        }
+
+        return res;
     }
 }

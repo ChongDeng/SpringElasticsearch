@@ -142,7 +142,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/advancedSearch2?keyword=测试 工",
+					"raw": "localhost:8080/advancedSearch2?keyword=测试&pageNumber=2&pageSize=2",
 					"host": [
 						"localhost"
 					],
@@ -153,7 +153,15 @@
 					"query": [
 						{
 							"key": "keyword",
-							"value": "测试 工"
+							"value": "测试"
+						},
+						{
+							"key": "pageNumber",
+							"value": "2"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
 						}
 					]
 				}
