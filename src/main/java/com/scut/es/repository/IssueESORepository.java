@@ -15,6 +15,7 @@ public interface IssueESORepository extends ElasticsearchRepository<IssueESO, Lo
     public Page<IssueESO> findByTitle(String title, Pageable pageable);
     //public IssueESO findByDescription(String description);
 
+//    public void deleteAll(List<Long> ids);
 
     public void deleteByTitle(String title);
     //public int  deleteByDescription(String description);

@@ -34,15 +34,15 @@ public class SearchController {
     }
 
     //case 1.2 : insert/update by http post
-    @PostMapping("/insertOrUpdateIssueES")
+    @PostMapping("/upsertIssue")
     String insertOrUpdateIssueES(@RequestBody AddIssueESBO addIssueESBO) {
         return issueESOService.insertOrUpdateIssueES(addIssueESBO);
     }
 
     //case 2: query list by keyword
-    @GetMapping("/query")
-    public List<IssueESO> getIssueList() {
-        return issueESOService.getIssueList("test");
+    @GetMapping("/queryByTitle/{title}")
+    public List<IssueESO> getIssueList(@PathVariable String title) {
+        return issueESOService.getIssueList(title);
     }
 
     //case 2.2: getAll
@@ -53,11 +53,11 @@ public class SearchController {
 
 
     //case 2.3: query list by pageable
-    @GetMapping("/search")
-    public List<IssueESO> search(PageSizeRequest pageSizeRequest,
-                                 @RequestParam(required = false)  String keyword)
+    @GetMapping("/searchWithPage")
+    public List<IssueESO> searchWithPage(PageSizeRequest pageSizeRequest,
+                                         @RequestParam(required = false)  String keyword)
     {
-        return issueESOService.search(pageSizeRequest, keyword);
+        return issueESOService.searchWithPage(pageSizeRequest, keyword);
     }
 
     //case 2.4: advanced search
@@ -65,7 +65,7 @@ public class SearchController {
     public List<IssueESO> advancedSearch(@RequestParam(required = false)  String keyword)
     {
         PageSizeRequest pageSizeRequest = new PageSizeRequest();
-        pageSizeRequest.setPageNum(1);
+        pageSizeRequest.setPageNum(0);
         pageSizeRequest.setPageSize(10);
 
         return issueESOService.advancedSearch(pageSizeRequest, keyword);
@@ -76,7 +76,7 @@ public class SearchController {
     public List<IssueESO> advancedSearch2(@RequestParam(required = false)  String keyword)
     {
         PageSizeRequest pageSizeRequest = new PageSizeRequest();
-        pageSizeRequest.setPageNum(1);
+        pageSizeRequest.setPageNum(0);
         pageSizeRequest.setPageSize(10);
 
         return issueESOService.advancedSearch2(pageSizeRequest, keyword);
@@ -84,7 +84,8 @@ public class SearchController {
 
     //case 2.6 queryNull
     @GetMapping("/queryNull")
-    public List<IssueESO> queryNull(@RequestParam String keyword, @RequestParam boolean isNull, @RequestParam int pageNumber, @RequestParam int pageSize) {
+    public List<IssueESO> queryNull(@RequestParam String keyword, @RequestParam boolean isNull,
+                                    @RequestParam int pageNumber, @RequestParam int pageSize) {
         return issueESOService.queryNull(keyword, isNull, pageNumber, pageSize);
     }
 
@@ -95,13 +96,16 @@ public class SearchController {
     }
 
     //case 3.2: delete by id
-    @GetMapping("/deleteById")
-    public String deleteById() {
-        return issueESOService.deleteById(261L);
+    @GetMapping("/deleteById/{id}")
+    public String deleteById(@PathVariable Long id) {
+        return issueESOService.deleteById(id);
     }
 
-    //case 3.3: delete all
-
+//    //case 3.3: batch delete:  cant work now. error:  No property deleteAll found for type IssueESO!
+//    @DeleteMapping("/deleteIds")
+//    public String deleteIds(List<Long> ids) {
+//        return issueESOService.deleteAll(ids);
+//    }
 
     //case 4: data clean
     @GetMapping("/dataClean")

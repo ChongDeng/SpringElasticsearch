@@ -1,9 +1,4 @@
 
-Elasticsearch 与mysql数据同步
-
-
-
-
 1 批量新增
 List<Item> list = new ArrayList<>();
         list.add(new Item(2L, "坚果手机R1", " 手机", "锤子", 3699.00, "http://image.leyou.com/123.jpg"));

@@ -1,0 +1,21 @@
+# kibana_cmd
+GET /issue_eso/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+# query null
+GET /issue_eso/_search
+{
+  "query" : {
+    "bool": {
+        "should": [
+            { "exists": { "field": "assignedToId" }}
+        ]
+    }
+  }
+}
+

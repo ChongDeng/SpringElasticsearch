@@ -80,7 +80,6 @@ public class IssueESOService {
                 "    \"systemBoardIdList\": null\n" +
                 "  }";
 
-
         ObjectMapper mapper = new ObjectMapper();
         IssueESO issueESO = mapper.readValue(jsonStr, IssueESO.class);
 
@@ -123,12 +122,12 @@ public class IssueESOService {
 
 
     //case 2.3: query list by pageable
-    public List<IssueESO> search(PageSizeRequest pageSizeRequest, String keyword) {
+    public List<IssueESO> searchWithPage(PageSizeRequest pageSizeRequest, String keyword) {
         //方法1: 不带排序
         //Pageable pageable = PageRequest.of(1, 10);
 
         //方法2: 带排序： 根据id降序来排序
-        Pageable pageable = PageRequest.of(1, 10, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
         Page<IssueESO> issues = issueESORepository.findByTitle(keyword, pageable);
         String content = issues.getContent().toString();
         List<IssueESO> res = issues.getContent();
@@ -239,6 +238,11 @@ public class IssueESOService {
         return "success";
     }
 
+//    // case 3.3 batch delete
+//    public String deleteAll(List<Long> ids) {
+//        issueESORepository.deleteAll(ids);
+//        return "success";
+//    }
 
     //case 4: data clean
     public String dataClean()
@@ -291,7 +295,7 @@ public class IssueESOService {
 //            subQuery.should(QueryBuilders.termQuery("isClose", false));
 //            re.must(subQuery);
 
-            //step 13: issueCustomFields sub query
+              //step 13: issueCustomFields sub query
 //            List<List<Long>> customFieldItemIdsList = advancedSearchEntity.getCustomFieldItemIds();
 //            if(customFieldItemIdsList != null && customFieldItemIdsList.size() > 0)
 //            {
@@ -478,5 +482,4 @@ public class IssueESOService {
         return elasticsearchTemplate.queryForPage(nativeSearchQueryBuilder.build(), clazz, index);
 
     }
-
 }

@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "36880207-eefc-434d-84be-20c1bf312d0a",
+		"name": "ElasticSearchProject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2432732"
+	},
+	"item": [
+		{
+			"name": "insert_issue",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/insertByJson",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"insertByJson"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upsertIssue",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 2,\r\n  \"componentPartId\": 12,\r\n  \"assignedToId\": null,\r\n  \"issueTypeId\": 1,\r\n  \"issueTypeVal\": null,\r\n  \"title\": \"山楂糕\",\r\n   \"description\": \"<p>山楂宝贝</p><p><br></p><p>hello</p>\",\r\n   \"creator\": 52,\r\n   \"priority\": 1,\r\n   \"priorityStr\": \"HIGHEST\",\r\n   \"status\": 14,\r\n   \"statusStr\": null,\r\n   \"severity\": 2,\r\n   \"severityStr\": \"MAJOR\",\r\n   \"isClose\": false,\r\n   \"internalOnly\": false,\r\n   \"createdBy\": \"chaojun\",\r\n   \"created\": 1587698952000,\r\n   \"modifiedBy\": \"james\",\r\n   \"modified\": 1587958372790,\r\n   \"projectId\": 12,\r\n   \"projectTicketNo\": \"22\",\r\n   \"isDelete\": false,\r\n   \"assignedToUserName\": null,\r\n   \"projectName\": null,\r\n   \"componentPart\": null,\r\n   \"systemBoard\": null,\r\n   \"issueId\": 1,\r\n   \"systemBoardIdList\": [1,2,3]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/upsertIssue",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"upsertIssue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryByTitle",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/queryByTitle/tesla",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"queryByTitle",
+						"tesla"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryByTitle_DescById_Page",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/searchWithPage?keyword=test",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"searchWithPage"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "test"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advancedSearch",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/advancedSearch?keyword=es",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"advancedSearch"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "es"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advancedSearch2",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/advancedSearch2?keyword=测试 工",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"advancedSearch2"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "测试 工"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAll",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getAll",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_issue_index_data_via_es_server",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{es_pwd}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "elastic",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{es_server}}:9200/issue_eso/_search?pretty=true",
+					"host": [
+						"{{es_server}}"
+					],
+					"port": "9200",
+					"path": [
+						"issue_eso",
+						"_search"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryNull",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/queryNull?keyword=山楂&isNull=true&pageNumber=0&pageSize=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"queryNull"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "山楂"
+						},
+						{
+							"key": "isNull",
+							"value": "true"
+						},
+						{
+							"key": "pageNumber",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteById",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/queryNull?keyword=山楂&isNull=true&pageNumber=0&pageSize=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"queryNull"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "山楂"
+						},
+						{
+							"key": "isNull",
+							"value": "true"
+						},
+						{
+							"key": "pageNumber",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
