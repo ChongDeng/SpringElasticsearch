@@ -10,7 +10,7 @@
 spring:
   elasticsearch:
     rest:
-      uris: 192.168.1.7:9200
+      uris: 192.168.89.128:9200
       username: elastic
       password: 111111
 

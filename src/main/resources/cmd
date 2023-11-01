@@ -19,3 +19,13 @@ GET /issue_eso/_search
   }
 }
 
+# dfs_query_then_fetch
+GET /issue_eso/_search?search_type=dfs_query_then_fetch
+{
+  "query": {
+    "match": {
+      "title": "chong"
+    }
+  }
+}
+
